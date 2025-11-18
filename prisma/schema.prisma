@@ -1,0 +1,82 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  fullName  String
+  country   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  restaurants Restaurant[]
+  tokens      EmailLoginToken[]
+}
+
+model Restaurant {
+  id        String   @id @default(cuid())
+  name      String
+  location  String
+  slug      String   @unique
+  ownerId   String
+  owner     User     @relation(fields: [ownerId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  categories Category[]
+  dishes     Dish[]
+}
+
+model Category {
+  id           String      @id @default(cuid())
+  restaurantId String
+  restaurant   Restaurant  @relation(fields: [restaurantId], references: [id])
+  name         String
+  sortOrder    Int         @default(0)
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  dishes       DishCategory[]
+}
+
+model Dish {
+  id           String      @id @default(cuid())
+  restaurantId String
+  restaurant   Restaurant  @relation(fields: [restaurantId], references: [id])
+  name         String
+  imageUrl     String
+  description  String
+  spiceLevel   Int?
+  priceCents   Int         @default(0)
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  categories   DishCategory[]
+}
+
+model DishCategory {
+  dishId     String
+  categoryId String
+  assignedAt DateTime @default(now())
+
+  dish     Dish     @relation(fields: [dishId], references: [id])
+  category Category @relation(fields: [categoryId], references: [id])
+
+  @@id([dishId, categoryId])
+}
+
+model EmailLoginToken {
+  id        String   @id @default(cuid())
+  email     String
+  code      String
+  expiresAt DateTime
+  usedAt    DateTime?
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id])
+
+  @@index([email, code])
+}

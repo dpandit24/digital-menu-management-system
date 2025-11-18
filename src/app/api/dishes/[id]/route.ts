@@ -1,0 +1,20 @@
+import { db } from "@/server/db";
+import { getSessionUserId } from "@/lib/auth";
+import { NextRequest } from "next/server";
+
+export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
+	const userId = await getSessionUserId();
+	if (!userId) return new Response("Unauthorized", { status: 401 });
+	const form = await req.formData();
+	const method = String(form.get("_method") ?? "").toUpperCase();
+
+	const dish = await db.dish.findUnique({ where: { id: params.id }, include: { restaurant: true } });
+	if (!dish || dish.restaurant.ownerId !== userId) return new Response("Not found", { status: 404 });
+
+	if (method === "DELETE") {
+		await db.dish.delete({ where: { id: params.id } });
+		return new Response(null, { status: 302, headers: { Location: `/admin/restaurants/${dish.restaurantId}` } });
+	}
+	return new Response("Unsupported", { status: 400 });
+}
+
