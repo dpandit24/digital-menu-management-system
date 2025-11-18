@@ -5,6 +5,12 @@ This project lets restaurant owners manage multiple restaurants and digital menu
 ### Live Demo
 - Deployed on Vercel: https://digital-menu-management-system-seven.vercel.app/
 
+
+### Credential and restaurant-menu link with existing data:
+
+- Login email: diksha@gmail.com
+- Restaurant menu public link: https://digital-menu-management-system-seven.vercel.app/r/matuki-restaurant
+
 ### Tech
 - Next.js 14 (App Router) + TypeScript
 - Prisma ORM
