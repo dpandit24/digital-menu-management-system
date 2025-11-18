@@ -2,6 +2,9 @@
 
 This project lets restaurant owners manage multiple restaurants and digital menus, and share them via QR codes or links.
 
+### Live Demo
+- Deployed on Vercel: https://digital-menu-management-system-seven.vercel.app/
+
 ### Tech
 - Next.js 14 (App Router) + TypeScript
 - Prisma ORM
